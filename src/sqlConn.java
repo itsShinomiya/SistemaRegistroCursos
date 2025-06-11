@@ -8,7 +8,7 @@ public class sqlConn {
     public sqlConn() {
         try {
         conn = DriverManager.getConnection(url);
-        System.out.println("Connected to the database successfully!");
+        System.out.println("Banco de dados conectado! \n");
         } catch (SQLException e) {
             e.printStackTrace();
         }
