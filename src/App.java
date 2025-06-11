@@ -16,12 +16,41 @@ public class App {
                 case 1:
                     
                     break;
-            
+                case 2:
+                    
+                    break;
+                case 3:
+                    
+                    break;
+                case 4:
+                    
+                    break;
+                case 5:
+                    x = false;
+                    System.out.println("Saindo do programa...");
+                    break;
                 default:
+                    System.out.println("Opção inválida, tente novamente.");
                     break;
             }
         } while (x == true);
         scanner.close();
-        sqlConn conn = new sqlConn();
+        //sqlConn conn = new sqlConn();
     }
+
+    public void criaProfessor() {
+        
+    }
+
+    public void criaArea() {
+        
+    }
+
+    public void alteraArea() {
+        
+    }
+
+    public void criaCurso() {
+        
+    }    
 }
