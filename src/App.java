@@ -23,7 +23,7 @@ public class App {
                     criaArea(conn, scanner);
                     break;
                 case 3:
-                    alteraArea();
+                    alteraArea(scanner, conn);
                     break;
                 case 4:
                     criaCurso(scanner, conn);
@@ -97,7 +97,34 @@ public class App {
         }
     }
 
-    public static void alteraArea() {
+    public static void alteraArea(Scanner scanner, sqlConn sqlConn) {
+        scanner.nextLine();
+
+        System.out.println("Digite o código da área que deseja alterar:");
+        int codigo = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.println("Digite a nova descrição da área:");
+        String desc = scanner.nextLine();
+        System.out.println("Digite o novo número de cursos pelo qual a área é responsável:");
+        int curso = scanner.nextInt();
+
+        String sql = "UPDATE areas SET descricao = ?, cursos = ? WHERE codigo = ?";
+
+        try(Connection conn = sqlConn.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, desc);
+            pstmt.setInt(2, curso);
+            pstmt.setInt(3, codigo);
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Área alterada com sucesso!");
+            } else {
+                System.out.println("Erro ao alterar área.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         
     }
 
