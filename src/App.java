@@ -20,13 +20,13 @@ public class App {
                     criaProfessor(scanner, conn);
                     break;
                 case 2:
-                    criaArea();
+                    criaArea(conn, scanner);
                     break;
                 case 3:
                     alteraArea();
                     break;
                 case 4:
-                    criaCurso();
+                    criaCurso(scanner, conn);
                     break;
                 case 5:
                     x = false;
@@ -72,15 +72,73 @@ public class App {
         }
     }
 
-    public static void criaArea() {
-        
+    public static void criaArea(sqlConn sqlConn, Scanner scanner) {
+        scanner.nextLine();
+
+        System.out.println("Digite a descrição da área:");
+        String desc = scanner.nextLine();
+        System.out.println("Digite o número de cursos pelo qual a área é responsável:");
+        int curso = scanner.nextInt();
+
+        String sql = "INSERT INTO areas (descricao, cursos) VALUES (?, ?)";
+
+        try(Connection conn = sqlConn.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, desc);
+            pstmt.setInt(2, curso);
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Área cadastrada com sucesso!");
+            } else {
+                System.out.println("Erro ao cadastrar área.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void alteraArea() {
         
     }
 
-    public static void criaCurso() {
-        
+    public static void criaCurso(Scanner scanner, sqlConn sqlConn) {
+        scanner.nextLine();
+
+        System.out.println("Digite o nome do curso:");
+        String nome = scanner.nextLine();
+        LocalDate dataI, dataF;
+        do{
+            System.out.println("Digite a data de início do curso (YYYY-MM-DD):");
+            String dataInicio = scanner.nextLine();
+            dataI = LocalDate.parse(dataInicio);
+        }while(!dataI.isAfter(LocalDate.now()));
+        do{
+            System.out.println("Digite a data de fim do curso (YYYY-MM-DD):");
+            String dataFim = scanner.nextLine();
+            dataF = LocalDate.parse(dataFim);
+        }while(!dataF.isBefore(LocalDate.now()) && !dataF.isAfter(dataI));
+        System.out.println("Digite o código do professor responsável:");
+        int prof = scanner.nextInt();
+        System.out.println("Digite o código da área responsável:");
+        int area = scanner.nextInt();
+
+        String sql = "INSERT INTO cursos (nome, inicio, fim, professor, area) VALUES (?, ?, ?, ?, ?)";
+
+        try(Connection conn = sqlConn.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, nome);
+            pstmt.setObject(2, dataI);
+            pstmt.setObject(3, dataF);
+            pstmt.setInt(4, prof);
+            pstmt.setInt(5, area);
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Curso cadastrado com sucesso!");
+            } else {
+                System.out.println("Erro ao cadastrar curso.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }    
 }
