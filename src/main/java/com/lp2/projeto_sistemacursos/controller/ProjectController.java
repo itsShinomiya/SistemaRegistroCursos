@@ -1,7 +1,9 @@
 package com.lp2.projeto_sistemacursos.controller;
 
 import com.lp2.projeto_sistemacursos.model.Area;
+import com.lp2.projeto_sistemacursos.model.Curso;
 import com.lp2.projeto_sistemacursos.service.AreaService;
+import com.lp2.projeto_sistemacursos.service.CursoService;
 import com.lp2.projeto_sistemacursos.service.ProfService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ public class ProjectController {
     ProfService profService;
     @Autowired
     private AreaService areaService;
+    @Autowired
+    private CursoService cursoService;
 
     @RequestMapping(value = "/professores", method = RequestMethod.GET)
     public ModelAndView getProfessor(){
@@ -40,8 +44,12 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/cursos", method = RequestMethod.GET)
-    public String getCursos(){
-        return "cursos";
+    public ModelAndView getCursos(){
+        ModelAndView mv = new ModelAndView("crusos");
+        List<Curso> cursos = cursoService.findAll();
+        mv.addObject("cursos", cursos);
+        mv.addObject("curso", new Curso());
+        return mv;
     }
 
     @RequestMapping(value = "/areas", method = RequestMethod.GET)
@@ -77,6 +85,19 @@ public class ProjectController {
 
         areaService.save(area);
         return "redirect:/areas";
+    }
+
+    @PostMapping(value = "/novocurso")
+    public String saveCurso(@Valid Curso curso, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("openModal", true);
+            List<Curso> cursos = cursoService.findAll();
+            model.addAttribute("cursos", cursos);
+            return "cursos";
+        }
+
+        cursoService.save(curso);
+        return "redirect:/cursos";
     }
 
     @GetMapping("/login")
