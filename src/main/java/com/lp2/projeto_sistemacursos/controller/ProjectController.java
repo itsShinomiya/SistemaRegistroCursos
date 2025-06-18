@@ -45,7 +45,7 @@ public class ProjectController {
 
     @RequestMapping(value = "/cursos", method = RequestMethod.GET)
     public ModelAndView getCursos(){
-        ModelAndView mv = new ModelAndView("crusos");
+        ModelAndView mv = new ModelAndView("cursos");
         List<Curso> cursos = cursoService.findAll();
         mv.addObject("cursos", cursos);
         mv.addObject("curso", new Curso());

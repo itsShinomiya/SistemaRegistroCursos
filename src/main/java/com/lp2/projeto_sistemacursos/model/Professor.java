@@ -8,6 +8,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table (name="Professores")
@@ -29,9 +31,8 @@ public class Professor {
     @PositiveOrZero(message = "O salário não pode ser um valor negativo")
     private float salario;
 
-    @NotNull(message = "O número de cursos ministrados não pode ser nulo")
-    @Min(value = 0, message = "O número de cursos não pode ser negativo")
-    private int cursosministrados;
+    @OneToMany(mappedBy = "professor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Curso> cursosMinistrados = new ArrayList<>();
 
     public Long getCodigo() {
         return codigo;
@@ -65,11 +66,17 @@ public class Professor {
         this.salario = salario;
     }
 
-    public int getCursosministrados() {
-        return cursosministrados;
+    @OneToMany(mappedBy = "professor")
+    public List<Curso> getCursosMinistrados() {
+        return cursosMinistrados;
     }
 
-    public void setCursosministrados(int cursosministrados) {
-        this.cursosministrados = cursosministrados;
+    public void setCursosMinistrados(List<Curso> cursosMinistrados) {
+        this.cursosMinistrados = cursosMinistrados;
+    }
+
+    @Override
+    public String toString() {
+        return nome;
     }
 }

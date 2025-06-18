@@ -29,25 +29,27 @@ public class Curso {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate fim;
 
-    @NotNull(message = "O código do professor responsável é obrigatório!")
-    private int professor;
+    @ManyToOne
+    @JoinColumn(name = "professor", nullable = false)
+    private Professor professor;
 
-    @NotNull(message = "O código da área responsável é obrigatório!")
-    private int area;
+    @ManyToOne
+    @JoinColumn(name = "area", nullable = false)
+    private Area area;
 
-    public int getArea() {
+    public Area getArea() {
         return area;
     }
 
-    public void setArea(int area) {
+    public void setArea(Area area) {
         this.area = area;
     }
 
-    public int getProfessor() {
+    public Professor getProfessor() {
         return professor;
     }
 
-    public void setProfessor(int professor) {
+    public void setProfessor(Professor professor) {
         this.professor = professor;
     }
 
