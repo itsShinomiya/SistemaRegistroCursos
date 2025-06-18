@@ -29,10 +29,12 @@ public class Curso {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate fim;
 
+    @NotNull(message = "Professor é obrigatório!")
     @ManyToOne
     @JoinColumn(name = "professor", nullable = false)
     private Professor professor;
 
+    @NotNull(message = "Área é obrigatório!")
     @ManyToOne
     @JoinColumn(name = "area", nullable = false)
     private Area area;

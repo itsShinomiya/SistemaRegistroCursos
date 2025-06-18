@@ -30,11 +30,11 @@ public class Area {
     }
 
     @OneToMany(mappedBy = "area")
-    public List<Curso> getCursosAdm() {
+    public List<Curso> getCursos() {
         return cursos;
     }
 
-    public void setCursosAdm(List<Curso> cursosAdm) {
+    public void setCursos(List<Curso> cursos) {
         this.cursos = cursos;
     }
 
