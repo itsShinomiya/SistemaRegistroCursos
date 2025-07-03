@@ -107,7 +107,7 @@ public class ProjectController {
         if (result.hasErrors()) {
             model.addAttribute("openEditModal", true);
             model.addAttribute("cursos", cursoService.findAll());
-            model.addAttribute("professores", profService.findById());
+            model.addAttribute("professores", profService.findAll());
             model.addAttribute("areas", areaService.findAll());
             model.addAttribute("curso", curso);
 
