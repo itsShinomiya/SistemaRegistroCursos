@@ -2,10 +2,7 @@ package com.lp2.projeto_sistemacursos.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -24,6 +21,7 @@ public class Curso {
 
     @NotNull(message = "Data de início é obrigatória!")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @FutureOrPresent(message = "A data de início não pode ser no passado.")
     private LocalDate inicio;
 
     @NotNull(message = "Data de fim é obrigatória!")
