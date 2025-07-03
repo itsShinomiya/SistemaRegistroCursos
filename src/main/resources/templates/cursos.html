@@ -6,6 +6,7 @@
   <!-- CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <!-- JavaScript -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 </head>
@@ -50,6 +51,7 @@
           <th scope="col">Data de fim</th>
           <th scope="col">Professor responsável</th>
           <th scope="col">Área responsável</th>
+          <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
@@ -60,6 +62,19 @@
           <td><span th:text="${curso.fim}"></span></td>
           <td><span th:text="${curso.professor}"></span></td>
           <td><span th:text="${curso.area}"></span></td>
+          <td>
+            <button type="button" class="btn btn-sm btn-link edit-btn" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#editModal"
+                    th:data-curso-id="${curso.numero}"
+                    th:data-curso-nome="${curso.nome}"
+                    th:data-curso-inicio="${curso.inicio}"
+                    th:data-curso-fim="${curso.fim}"
+                    th:data-curso-professor="${curso.professor.codigo}"
+                    th:data-curso-area="${curso.area.codigo}">
+                <span class="material-symbols-outlined">edit_square</span>
+            </button>
+          </td>
         </tr>
         </tbody>
       </table>
@@ -76,7 +91,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="staticBackdropLabel">Adicionar área</h1>
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">Adicionar curso</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form method="post" th:action="@{/novocurso}" th:object="${curso}">
@@ -116,6 +131,54 @@
     </div>
   </div>
 
+
+  <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="editModalLabel">Modificar curso</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="editForm" method="post" th:action="@{/editcurso}"> <div class="modal-body" th:object="${curso}">
+            <div class="mb-3">
+              <label for="editNumero" class="form-label">Número do Curso</label>
+              <input type="number" id="editNumero" th:field="*{numero}" class="form-control" readonly>
+            </div>
+            <div class="mb-3">
+              <label for="editNome" class="form-label">Nome do Curso</label>
+              <input type="text" id="editNome" class="form-control" th:field="*{nome}">
+              <div class="text-danger" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></div>
+            </div>
+            <div class="mb-3">
+              <label for="editInicio" class="form-label">Início</label>
+              <input type="date" id="editInicio" class="form-control" th:field="*{inicio}">
+              <div class="text-danger" th:if="${#fields.hasErrors('inicio')}" th:errors="*{inicio}"></div>
+            </div>
+            <div class="mb-3">
+              <label for="editFim" class="form-label">Fim</label>
+              <input type="date" id="editFim" class="form-control" th:field="*{fim}">
+              <div class="text-danger" th:if="${#fields.hasErrors('fim')}" th:errors="*{fim}"></div>
+            </div>
+            <div class="mb-3">
+              <label for="editProfessor" class="form-label">Professor responsável</label>
+              <input type="number" id="editProfessor" class="form-control" th:field="*{professor}">
+              <div class="text-danger" th:if="${#fields.hasErrors('professor')}" th:errors="*{professor}"></div>
+            </div>
+            <div class="mb-3">
+              <label for="editArea" class="form-label">Área responsável</label>
+              <input type="number" id="editArea" class="form-control" th:field="*{area}">
+              <div class="text-danger" th:if="${#fields.hasErrors('area')}" th:errors="*{area}"></div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <script th:if="${openModal}">
     document.addEventListener('DOMContentLoaded', function() {
       var myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
@@ -123,7 +186,42 @@
     });
   </script>
 
+  <script th:if="${openEditModal}">
+    document.addEventListener('DOMContentLoaded', function() {
+      var myModal = new bootstrap.Modal(document.getElementById('editModal'));
+      myModal.show();
+    });
+  </script>
 
+  <script>
+    const editModal = document.getElementById('editModal');
+  
+    editModal.addEventListener('show.bs.modal', function (event) {
+      const button = event.relatedTarget;
+  
+      const cursoId = button.getAttribute('data-curso-id');
+      const cursoNome = button.getAttribute('data-curso-nome');
+      const cursoInicio = button.getAttribute('data-curso-inicio');
+      const cursoFim = button.getAttribute('data-curso-fim');
+      const cursoProfessor = button.getAttribute('data-curso-professor');
+      const cursoArea = button.getAttribute('data-curso-area');
+  
+      const modalForm = document.getElementById('editForm');
+      const modalNumeroInput = document.getElementById('editNumero'); 
+      const modalNomeInput = document.getElementById('editNome');
+      const modalInicioInput = document.getElementById('editInicio');
+      const modalFimInput = document.getElementById('editFim');
+      const modalProfessorInput = document.getElementById('editProfessor');
+      const modalAreaInput = document.getElementById('editArea');
+  
+      modalNumeroInput.value = cursoId; 
+      modalNomeInput.value = cursoNome;
+      modalInicioInput.value = cursoInicio;
+      modalFimInput.value = cursoFim;
+      modalProfessorInput.value = cursoProfessor;
+      modalAreaInput.value = cursoArea;
+    });
+  </script>
 
 </body>
 </html>

@@ -10,13 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import com.lp2.projeto_sistemacursos.model.Professor;
 
+import java.beans.PropertyEditorSupport;
 import java.util.List;
 
 @Controller
@@ -49,6 +48,9 @@ public class ProjectController {
         List<Curso> cursos = cursoService.findAll();
         mv.addObject("cursos", cursos);
         mv.addObject("curso", new Curso());
+        mv.addObject("professores", profService.findAll());
+        mv.addObject("areas", areaService.findAll());
+
         return mv;
     }
 
@@ -91,11 +93,26 @@ public class ProjectController {
     public String saveCurso(@Valid Curso curso, BindingResult result, Model model) {
         if (result.hasErrors()) {
             model.addAttribute("openModal", true);
-            List<Curso> cursos = cursoService.findAll();
-            model.addAttribute("cursos", cursos);
+            model.addAttribute("cursos", cursoService.findAll());
+            model.addAttribute("professores", profService.findAll());
+            model.addAttribute("areas", areaService.findAll());
             return "cursos";
         }
+        cursoService.save(curso);
+        return "redirect:/cursos";
+    }
 
+    @PostMapping(value = "/editcurso")
+    public String editCurso(@Valid Curso curso, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("openEditModal", true);
+            model.addAttribute("cursos", cursoService.findAll());
+            model.addAttribute("professores", profService.findById());
+            model.addAttribute("areas", areaService.findAll());
+            model.addAttribute("curso", curso);
+
+            return "cursos";
+        }
         cursoService.save(curso);
         return "redirect:/cursos";
     }
